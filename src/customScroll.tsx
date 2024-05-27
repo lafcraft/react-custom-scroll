@@ -20,29 +20,28 @@ const CustomScrollbar = styled.div`
   height: 100%;
   width: 6px;
   right: 3px;
-  opacity: 0;
   z-index: 1;
-  transition: opacity 0.4s ease-out;
   padding: 6px 0;
   box-sizing: border-box;
-  will-change: opacity;
   pointer-events: none;
 
   &.rcs-custom-scrollbar-rtl {
     right: auto;
     left: 3px;
   }
+`;
 
-  &.scroll-visible {
-    opacity: 1;
-    transition-duration: 0.2s;
-  }
+const ScrollTrack = styled.div`
+  margin-top: 7px;
+  background: #2c2c2c;
+  border-radius: 3px;
+  width: 6px;
 `;
 
 const ScrollHandle = styled.div`
   height: calc(100% - 12px);
   margin-top: 6px;
-  background-color: rgba(78, 183, 245, 0.7);
+  background: #dcdcdc;
   border-radius: 3px;
 `;
 
@@ -120,7 +119,6 @@ interface CustomScrollProps extends PropsWithChildren {
 interface CustomScrollState {
   scrollPos: number;
   onDrag: boolean;
-  visible: boolean;
 }
 
 export class CustomScroll extends Component<
@@ -144,7 +142,6 @@ export class CustomScroll extends Component<
     this.state = {
       scrollPos: 0,
       onDrag: false,
-      visible: false,
     };
 
     this.hideScrollThumb = simpleDebounce(() => {
@@ -474,20 +471,15 @@ export class CustomScroll extends Component<
     };
   };
 
-  onMouseEnter = () => {
-    this.setState({ visible: true });
-  };
-
-  onMouseLeave = () => {
-    this.setState({ visible: false });
-  };
-
   render() {
     const scrollStyles = this.getScrollStyles();
     const rootStyle = this.getRootStyles();
     const scrollHandleStyle = this.enforceMinHandleHeight(
       this.getScrollHandleStyle(),
     );
+    const trackStyle = {
+      "height": `${(this.contentWrapperRef?.current?.clientHeight || 0) - 20}px`
+    };
     const className = [
       this.props.className || "",
       "rcs-custom-scroll",
@@ -507,17 +499,18 @@ export class CustomScroll extends Component<
           onMouseDown={this.onMouseDown}
           onTouchStart={this.onTouchStart}
           onClick={this.onClick}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
         >
           {this.hasScroll ? (
             <div className="rcs-positioning">
               <CustomScrollbar
                 data-testid="custom-scrollbar"
                 ref={this.customScrollbarRef}
-                className={`rcs-custom-scrollbar ${this.props.rtl ? "rcs-custom-scrollbar-rtl" : ""} ${this.state.visible ? "scroll-visible" : ""}`}
+                className={`rcs-custom-scrollbar ${this.props.rtl ? "rcs-custom-scrollbar-rtl" : ""}`}
                 key="scrollbar"
               >
+                <ScrollTrack
+                  style={trackStyle}
+                />
                 <div
                   data-testid="custom-scroll-handle"
                   ref={this.scrollHandleRef}

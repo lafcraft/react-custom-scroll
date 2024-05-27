@@ -17,7 +17,6 @@ interface CustomScrollProps extends PropsWithChildren {
 interface CustomScrollState {
     scrollPos: number;
     onDrag: boolean;
-    visible: boolean;
 }
 export declare class CustomScroll extends Component<CustomScrollProps, CustomScrollState> {
     scrollbarYWidth: number;
@@ -73,8 +72,6 @@ export declare class CustomScroll extends Component<CustomScrollProps, CustomScr
         height: number;
         top: number;
     };
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
     render(): import("react/jsx-runtime").JSX.Element;
 }
 export {};
